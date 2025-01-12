@@ -1,5 +1,9 @@
 import Avatar from "../assets/avatar.png";
-function Comment({ name, message, children }) {
+function Comment({ name, message, children, commentRef }) {
+  const handleReply = () => {
+    commentRef.current.scrollIntoView();
+  };
+
   return (
     <div className="box">
       <div className="content">
@@ -9,7 +13,7 @@ function Comment({ name, message, children }) {
         <div className="texts">
           <div className="header">
             <h3 className="name">{name}</h3>
-            <button>replay</button>
+            <button onClick={handleReply}>replay</button>
           </div>
           <p className="message">{message}</p>
         </div>

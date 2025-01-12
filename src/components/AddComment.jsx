@@ -1,8 +1,8 @@
-import React from "react";
+import React, { forwardRef } from "react";
 // import SelectBox from "./SelectBox";
-function AddComment() {
+const AddComment = forwardRef(function AddComment(props, commentRef) {
   return (
-    <div className="ac-wrapper">
+    <div className="ac-wrapper" ref={commentRef}>
       <h2 className="addCommentTitle">Write your comment:</h2>
       <form action="" className="form">
         <input placeholder="name" type="text" />
@@ -20,6 +20,6 @@ function AddComment() {
       </form>
     </div>
   );
-}
+});
 
 export default AddComment;
