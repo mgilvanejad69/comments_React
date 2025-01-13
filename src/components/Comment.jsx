@@ -1,7 +1,14 @@
+import { useContext } from "react";
 import Avatar from "../assets/avatar.png";
-function Comment({ name, message, children, commentRef }) {
+import ReplyContext from "../contexts";
+function Comment({ name, message, children }) {
+  const { commentRef, setIsReplied, setName } =
+    useContext(ReplyContext);
+
   const handleReply = () => {
-    commentRef.current.scrollIntoView();
+    commentRef.current.scrollIntoView({ behavior: "smooth" });
+    setIsReplied(true);
+    setName(name);
   };
 
   return (

@@ -1,13 +1,27 @@
-import React, { forwardRef } from "react";
-// import SelectBox from "./SelectBox";
-const AddComment = forwardRef(function AddComment(props, commentRef) {
+import React, { useContext } from "react";
+import ReplyContext from "../contexts";
+import SelectBox from "../components/SelectBox";
+
+function AddComment() {
+  const { commentRef, isReplied, setIsReplied, name } =
+    useContext(ReplyContext);
+
+  const handleCancelReply = () => {
+    setIsReplied(false);
+  };
   return (
     <div className="ac-wrapper" ref={commentRef}>
-      <h2 className="addCommentTitle">Write your comment:</h2>
+      {isReplied ? (
+        <h2 className="addCommentTitle">
+          Write your comment in response to {name}:
+        </h2>
+      ) : (
+        <h2 className="addCommentTitle">Write your comment:</h2>
+      )}
       <form action="" className="form">
         <input placeholder="name" type="text" />
         <input placeholder="email" type="text" />
-        {/* SelectBox */}
+        {isReplied ? "" : <SelectBox />}
         <textarea
           placeholder="message..."
           name=""
@@ -16,10 +30,10 @@ const AddComment = forwardRef(function AddComment(props, commentRef) {
           rows="10"
         ></textarea>
         <button>Send</button>
-        {/* Cancell Button */}
+        {isReplied ? <button onClick={handleCancelReply}>Cancel</button> : ""}
       </form>
     </div>
   );
-});
+}
 
 export default AddComment;
