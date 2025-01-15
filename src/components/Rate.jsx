@@ -1,6 +1,6 @@
 import { AiOutlineStar as StartIconEmpty } from "react-icons/ai";
 import { AiFillStar as StartIconFull } from "react-icons/ai";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -12,6 +12,7 @@ function Rate() {
     { id: 4, hover: false, clicked: false },
     { id: 5, hover: false, clicked: false },
   ]);
+  const [DATA, setDATA] = useState({});
 
   const hoverHandler = (id) => {
     let hoverData = star.map((item) => {
@@ -30,20 +31,67 @@ function Rate() {
   };
 
   const submitRateHandler = (id) => {
-    // IF Request Error
-    // toast.error(message, {
-    //     position: "top-left",
-    //   });
-    // ===============================
-    // IF Request Success
-    // toast.success(message, {
-    //     position: "top-left",
-    //   });
+    let clickedData = star.map((elem) =>
+      elem.id <= id
+        ? { ...elem, hover: false, clicked: true }
+        : { ...elem, hover: false, clicked: false }
+    );
+    setStar(clickedData);
+    fetch(`http://127.0.0.1:8000/posts/`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ rate: id }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success") {
+          toast.success(data.message, {
+            position: "top-left",
+          });
+        } else {
+          if (DATA.rate === 0) {
+            toast.error(data.message, {
+              position: "top-left",
+            }); 
+          }
+          setDATA(data);
+          let clearData = star.map((elem) => ({
+            ...elem,
+            hover: false,
+            clicked: false,
+          }));
+          setStar(clearData);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const stepBackward = (rate) => {
-    // Your code ...
+    let clickedUpdated = star.map((elem) =>
+      elem.id <= rate
+        ? { ...elem, hover: false, clicked: true }
+        : { ...elem, hover: false, clicked: false }
+    );
+    setStar(clickedUpdated);
   };
+
+  useEffect(() => {
+    if (DATA.status === "error") {
+      stepBackward(DATA.rate);
+      if (DATA.rate !== 0) {
+        toast.error(
+          `Rating registering failed, Your Previous Rate is ${DATA.rate},try again.`,
+          {
+            position: "top-left",
+          }
+        );
+      }
+    }
+  }, [DATA]);
 
   return (
     <>
